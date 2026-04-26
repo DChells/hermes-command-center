@@ -466,7 +466,18 @@ def _restart_script(item: dict[str, Any], action: dict[str, Any] | None, config:
         "do_first": action_text,
         "success_condition": success,
         "stop_boundary": f"Stop after {config.focus_window_minutes} minutes or when the single action is done.",
-        "prompt": f"Help me make one focused {config.focus_window_minutes}-minute push on {item.get('title')}: {action_text}",
+        "prompt": (
+            f"Continue this Command Center item.\n"
+            f"Item: {item.get('title')}\n"
+            f"Source: {item.get('source_label') or item.get('source')}\n"
+            f"Target: {target}\n"
+            f"Reason: {reason}\n"
+            f"Recommended action: {action_text}\n\n"
+            f"Help me make one focused {config.focus_window_minutes}-minute push. "
+            "First decide whether this is a strong structured signal or a weak/freeform note signal. "
+            "Then give exactly: 1) what to open/run first, 2) the smallest useful action, "
+            "3) what counts as done, 4) where to stop."
+        ),
         "work_item_id": item.get("id"),
     }
 

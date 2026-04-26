@@ -100,16 +100,18 @@
               e("h1", { className: "text-3xl font-semibold tracking-tight" }, "Command Center"),
               e(Badge, { variant: status === "Critical" ? "destructive" : "secondary" }, status)
             ),
-            e("p", { className: "mt-2 text-sm text-muted-foreground" }, summary)
+            e("p", { className: "mt-2 text-sm text-muted-foreground" }, summary),
+            e("p", { className: "mt-1 text-xs text-muted-foreground" }, "A read-only control panel that turns sessions, repos, and configured notes into restartable work.")
           ),
           e("div", { className: "flex items-center gap-2" },
             copied ? e(Badge, { variant: copied === "Copied" ? "default" : "destructive" }, copied) : null,
             e(Button, { variant: "outline", onClick: load }, loading ? "Refreshing…" : "Refresh"),
-            e(Button, { variant: "secondary", onClick: function () { copy("Review my Command Center source diagnostics, work health checks, and restart scripts. Recommend the one best next action.", setCopied); } }, "Copy review prompt")
+            e(Button, { variant: "secondary", onClick: function () { copy("Use my Command Center dashboard as context. Review the source diagnostics, attention queue, primary objective, mission feed, health checks, and restart scripts. Separate high-confidence structured signals (git/session/API state) from weak freeform note signals. Recommend exactly one next action I can do in 15 minutes, explain why, and give me the first command/file to open.", setCopied); } }, "Copy review prompt")
           )
         ),
         e("div", { className: "mt-5 rounded-lg border border-border/70 bg-background/50 p-4" },
           e("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-primary" }, "Primary Objective"),
+          e("p", { className: "mt-1 text-xs text-muted-foreground" }, "The best restart candidate from the strongest available signals."),
           start ? [
             e("div", { key: "title", className: "mt-2 text-xl font-semibold" }, start.title),
             e("div", { key: "do", className: "mt-2 text-sm leading-6" }, start.do_first),
@@ -157,7 +159,10 @@
     });
     queue = queue.slice(0, 6);
     return e(Card, null,
-      e(CardHeader, { className: "pb-2" }, e(CardTitle, null, "Attention Queue")),
+      e(CardHeader, { className: "pb-2" },
+        e(CardTitle, null, "Attention Queue"),
+        e("p", { className: "text-xs text-muted-foreground" }, "Alerts and stale items that should be seen before browsing the full feed.")
+      ),
       e(CardContent, { className: "grid gap-3 md:grid-cols-2 xl:grid-cols-3" },
         queue.length ? queue.map(function (q, idx) {
           return e("div", { key: idx, className: cls("rounded-lg border p-3", severityClass(q.severity)) },
@@ -234,7 +239,7 @@
     var item = props.item;
     var setCopied = props.setCopied;
     var action = item.recommended_action || (item.next_actions && item.next_actions[0]);
-    var prompt = action ? "Help me make progress on " + item.title + ": " + action.text : "Review this item and suggest one next action: " + item.title;
+    var prompt = action ? "Continue this Command Center item. Item: " + item.title + "\nSource: " + (item.source_label || item.source || item.type) + "\nPath: " + (item.path || item.relative_path || "unknown") + "\nCurrent signal: " + (item.summary || "No summary") + "\nRecommended action: " + action.text + "\n\nHelp me make one focused 15-minute push. First verify whether this is a strong structured signal or a weak note signal, then give me exactly: 1) what to open/run first, 2) the smallest useful action, 3) what counts as done, 4) where to stop." : "Review this Command Center item and suggest one 15-minute next action: " + item.title;
     return e(Card, { className: cls("border", itemClass(item)) },
       e(CardContent, { className: "p-4" },
         e("div", { className: "flex items-start justify-between gap-3" },
@@ -371,7 +376,10 @@
       e("div", { className: "grid gap-5 xl:grid-cols-[1fr_380px]" },
         e("div", { className: "space-y-5" },
           e(Card, null,
-            e(CardHeader, { className: "pb-2" }, e(CardTitle, null, "Source Diagnostics")),
+            e(CardHeader, { className: "pb-2" },
+              e(CardTitle, null, "Source Diagnostics"),
+              e("p", { className: "text-xs text-muted-foreground" }, "Which local systems are connected and how many signals they contribute.")
+            ),
             e(CardContent, { className: "grid gap-3 md:grid-cols-2 xl:grid-cols-3" },
               sources.length ? sources.map(function (s) { return e(SourceCard, { key: s.id, source: s }); }) : e("p", { className: "text-sm text-muted-foreground" }, "No sources configured.")
             )
@@ -379,7 +387,10 @@
 
           e("div", { className: "space-y-3" },
             e("div", { className: "flex flex-wrap items-center justify-between gap-2" },
-              e("h2", { className: "text-lg font-semibold" }, "Mission Feed"),
+              e("div", null,
+                e("h2", { className: "text-lg font-semibold" }, "Mission Feed"),
+                e("p", { className: "text-xs text-muted-foreground" }, "All restartable items from configured sources; use filters to separate code, sessions, and notes.")
+              ),
               e("div", { className: "flex flex-wrap gap-2" },
                 ["active", "stale", "code", "sessions", "health", "paused", "waiting", "done", "all"].map(function (name) {
                   return e(Button, { key: name, size: "sm", variant: filter === name ? "default" : "outline", onClick: function () { setFilter(name); } }, name);
@@ -400,13 +411,19 @@
 
         e("div", { className: "space-y-5" },
           e(Card, null,
-            e(CardHeader, { className: "pb-2" }, e(CardTitle, null, "Health Checks")),
+            e(CardHeader, { className: "pb-2" },
+              e(CardTitle, null, "Health Checks"),
+              e("p", { className: "text-xs text-muted-foreground" }, "Detected friction: dirty repos, stale sessions, missing next actions, and other cleanup signals.")
+            ),
             e(CardContent, { className: "space-y-3" },
               checks.length ? checks.slice(0, 20).map(function (c) { return e(HealthCheckRow, { key: c.id, check: c, setCopied: setCopied }); }) : e("p", { className: "text-sm text-muted-foreground" }, "No health checks found.")
             )
           ),
           e(Card, null,
-            e(CardHeader, { className: "pb-2" }, e(CardTitle, null, "Restart Scripts")),
+            e(CardHeader, { className: "pb-2" },
+              e(CardTitle, null, "Restart Scripts"),
+              e("p", { className: "text-xs text-muted-foreground" }, "Copyable prompts for handing an item back to an LLM/agent without losing context.")
+            ),
             e(CardContent, { className: "space-y-3" },
               scripts.length ? scripts.slice(0, 6).map(function (s) { return e(RestartCard, { key: s.id, script: s, primary: false, setCopied: setCopied }); }) : e("p", { className: "text-sm text-muted-foreground" }, "No restart scripts available.")
             )
