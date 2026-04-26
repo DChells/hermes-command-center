@@ -1,0 +1,13 @@
+{
+  "name": "command-center",
+  "label": "Command Center",
+  "description": "Read-only mission control for active work: source diagnostics, work health checks, restart scripts, and next actions.",
+  "icon": "Radar",
+  "version": "0.2.0",
+  "tab": {
+    "path": "/command-center",
+    "position": "after:sessions"
+  },
+  "entry": "dist/index.js",
+  "api": "plugin_api.py"
+}

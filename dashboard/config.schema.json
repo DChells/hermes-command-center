@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Command Center Configuration",
+  "type": "object",
+  "properties": {
+    "workspace_name": {"type": "string", "default": "Command Center"},
+    "workspace_root": {"type": ["string", "null"], "description": "Workspace or notes root. Prefer explicit setup over broad guesses."},
+    "projects_dir": {"type": "string", "default": "projects"},
+    "captures_dir": {"type": "string", "default": "captures"},
+    "wiki_path": {"type": ["string", "null"], "description": "LLM wiki root. Leave null unless the user actually has an llm-wiki-style directory."},
+    "git_roots": {"type": "array", "items": {"type": "string"}, "description": "Explicit code roots to scan. Do not default to scanning the whole home directory."},
+    "default_stale_after_days": {"type": "integer", "default": 7},
+    "git_stale_days": {"type": "integer", "default": 14},
+    "session_stale_days": {"type": "integer", "default": 7},
+    "focus_window_minutes": {"type": "integer", "default": 15},
+    "enable_projects": {"type": "boolean", "default": true},
+    "enable_wiki": {"type": "boolean", "default": false},
+    "enable_sessions": {"type": "boolean", "default": true},
+    "enable_git": {"type": "boolean", "default": true},
+    "expose_absolute_paths": {"type": "boolean", "default": false}
+  }
+}

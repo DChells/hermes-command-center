@@ -1,0 +1,19 @@
+{
+  "workspace_name": "Personal Command Center",
+  "workspace_root": "/absolute/path/to/vault-or-workspace",
+  "projects_dir": "projects",
+  "captures_dir": "captures",
+  "wiki_path": null,
+  "git_roots": ["/absolute/path/to/code"],
+  "enable_projects": true,
+  "enable_wiki": false,
+  "enable_sessions": true,
+  "enable_git": true,
+  "default_stale_after_days": 7,
+  "git_stale_days": 14,
+  "session_stale_days": 7,
+  "session_limit": 30,
+  "git_max_repos": 60,
+  "focus_window_minutes": 15,
+  "expose_absolute_paths": false
+}
