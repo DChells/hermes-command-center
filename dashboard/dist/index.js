@@ -100,8 +100,7 @@
               e("h1", { className: "text-3xl font-semibold tracking-tight" }, "Command Center"),
               e(Badge, { variant: status === "Critical" ? "destructive" : "secondary" }, status)
             ),
-            e("p", { className: "mt-2 text-sm text-muted-foreground" }, summary, " · ", data.ops && data.ops.normalization),
-            e("p", { className: "mt-1 text-xs text-muted-foreground" }, "Best signals: git/session/API state. Weak signals: freeform notes and wiki conventions until setup or LLM enrichment tailors them.")
+            e("p", { className: "mt-2 text-sm text-muted-foreground" }, summary)
           ),
           e("div", { className: "flex items-center gap-2" },
             copied ? e(Badge, { variant: copied === "Copied" ? "default" : "destructive" }, copied) : null,
@@ -132,7 +131,7 @@
         e("div", { className: "flex flex-wrap items-start justify-between gap-3" },
           e("div", null,
             e("div", { className: "font-semibold" }, cfg.setup_needed ? "Setup needed: tune this Command Center" : "Setup configured"),
-            e("p", { className: "mt-1 text-sm text-muted-foreground" }, cfg.setup_needed ? "This install is still using weak defaults. Run the one-time local setup prompt so a persona/local agent chooses real roots and conventions." : "Using explicit config from " + (cfg.config_source || "environment") + "."),
+            e("p", { className: "mt-1 text-sm text-muted-foreground" }, cfg.setup_needed ? "Run one local setup pass to choose real roots and conventions." : "Using " + (cfg.config_source || "explicit config") + "."),
             e("p", { className: "mt-1 text-xs text-muted-foreground" }, "Target config: ", cfg.config_path || "~/.hermes/command-center.json")
           ),
           e(Button, { variant: cfg.setup_needed ? "default" : "outline", onClick: function () { copy(ops.setup_prompt || "", setCopied); } }, "Copy setup prompt")
@@ -358,7 +357,7 @@
 
       e("div", { className: "grid gap-3 md:grid-cols-4 lg:grid-cols-8" },
         e(OpTile, { label: "Sources", value: data.counts.sources, detail: "configured" }),
-        e(OpTile, { label: "Work items", value: data.counts.work_items, detail: "normalized" }),
+        e(OpTile, { label: "Items", value: data.counts.work_items, detail: "tracked" }),
         e(OpTile, { label: "Active", value: data.counts.active, detail: "in motion", tone: "border-emerald-500/30 bg-emerald-500/5" }),
         e(OpTile, { label: "Stale", value: data.counts.stale, detail: "needs restart", tone: data.counts.stale ? "border-yellow-500/40 bg-yellow-500/10" : "border-border/70 bg-card/70" }),
         e(OpTile, { label: "Inbox", value: data.counts.inbox, detail: "untriaged" }),
@@ -380,7 +379,7 @@
 
           e("div", { className: "space-y-3" },
             e("div", { className: "flex flex-wrap items-center justify-between gap-2" },
-              e("h2", { className: "text-lg font-semibold" }, "Work Items"),
+              e("h2", { className: "text-lg font-semibold" }, "Mission Feed"),
               e("div", { className: "flex flex-wrap gap-2" },
                 ["active", "stale", "code", "sessions", "health", "paused", "waiting", "done", "all"].map(function (name) {
                   return e(Button, { key: name, size: "sm", variant: filter === name ? "default" : "outline", onClick: function () { setFilter(name); } }, name);
@@ -401,7 +400,7 @@
 
         e("div", { className: "space-y-5" },
           e(Card, null,
-            e(CardHeader, { className: "pb-2" }, e(CardTitle, null, "Work Health Checks")),
+            e(CardHeader, { className: "pb-2" }, e(CardTitle, null, "Health Checks")),
             e(CardContent, { className: "space-y-3" },
               checks.length ? checks.slice(0, 20).map(function (c) { return e(HealthCheckRow, { key: c.id, check: c, setCopied: setCopied }); }) : e("p", { className: "text-sm text-muted-foreground" }, "No health checks found.")
             )
